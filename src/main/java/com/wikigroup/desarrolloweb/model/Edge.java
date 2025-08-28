@@ -1,15 +1,8 @@
 package com.wikigroup.desarrolloweb.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "edges")
 public class Edge {
 
     @Id
@@ -20,18 +13,18 @@ public class Edge {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "process_id")
-    private Process process;
-
-    @ManyToOne
     @JoinColumn(name = "activity_source_id")
-    private Activity sourceActivity;
+    private Activity activitySource;
 
     @ManyToOne
     @JoinColumn(name = "activity_destiny_id")
-    private Activity destinyActivity;
+    private Activity activityDestiny;
 
-    // Getters y Setters
+    @ManyToOne
+    @JoinColumn(name = "process_id")
+    private Process process;
+
+    // Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -41,12 +34,13 @@ public class Edge {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public Activity getActivitySource() { return activitySource; }
+    public void setActivitySource(Activity activitySource) { this.activitySource = activitySource; }
+
+    public Activity getActivityDestiny() { return activityDestiny; }
+    public void setActivityDestiny(Activity activityDestiny) { this.activityDestiny = activityDestiny; }
+
     public Process getProcess() { return process; }
     public void setProcess(Process process) { this.process = process; }
-
-    public Activity getSourceActivity() { return sourceActivity; }
-    public void setSourceActivity(Activity sourceActivity) { this.sourceActivity = sourceActivity; }
-
-    public Activity getDestinyActivity() { return destinyActivity; }
-    public void setDestinyActivity(Activity destinyActivity) { this.destinyActivity = destinyActivity; }
 }
+

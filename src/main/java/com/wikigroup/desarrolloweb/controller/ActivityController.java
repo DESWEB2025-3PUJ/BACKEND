@@ -17,7 +17,9 @@ public class ActivityController {
     }
 
     @GetMapping
-    public List<Activity> getAll() { return activityService.findAll(); }
+    public List<Activity> getAll() {
+        return activityService.findAll();
+    }
 
     @GetMapping("/{id}")
     public Activity getById(@PathVariable Long id) {
@@ -25,14 +27,19 @@ public class ActivityController {
     }
 
     @PostMapping
-    public Activity create(@RequestBody Activity activity) { return activityService.save(activity); }
+    public Activity create(@RequestBody Activity activity) {
+        return activityService.save(activity);
+    }
 
     @PutMapping("/{id}")
     public Activity update(@PathVariable Long id, @RequestBody Activity activity) {
-        activity.setPk(id);
+        activity.setId(id);
         return activityService.save(activity);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) { activityService.delete(id); }
+    public void delete(@PathVariable Long id) {
+        activityService.delete(id);
+    }
 }
+

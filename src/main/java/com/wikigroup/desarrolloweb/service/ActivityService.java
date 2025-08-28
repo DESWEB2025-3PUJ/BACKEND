@@ -5,21 +5,23 @@ import com.wikigroup.desarrolloweb.repository.ActivityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActivityService {
+
     private final ActivityRepository activityRepository;
 
     public ActivityService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
-    public List<Activity> getAll() {
+    public List<Activity> findAll() {
         return activityRepository.findAll();
     }
 
-    public Activity getById(Long id) {
-        return activityRepository.findById(id).orElse(null);
+    public Optional<Activity> findById(Long id) {
+        return activityRepository.findById(id);
     }
 
     public Activity save(Activity activity) {
@@ -30,3 +32,4 @@ public class ActivityService {
         activityRepository.deleteById(id);
     }
 }
+

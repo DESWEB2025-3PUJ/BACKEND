@@ -25,7 +25,9 @@ public class EdgeController {
     }
 
     @GetMapping
-    public List<Edge> getAll() { return edgeService.findAll(); }
+    public List<Edge> getAll() {
+        return edgeService.findAll();
+    }
 
     @GetMapping("/{id}")
     public Edge getById(@PathVariable Long id) {
@@ -33,7 +35,9 @@ public class EdgeController {
     }
 
     @PostMapping
-    public Edge create(@RequestBody Edge edge) { return edgeService.save(edge); }
+    public Edge create(@RequestBody Edge edge) {
+        return edgeService.save(edge);
+    }
 
     @PutMapping("/{id}")
     public Edge update(@PathVariable Long id, @RequestBody Edge edge) {
@@ -42,5 +46,8 @@ public class EdgeController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) { edgeService.delete(id); }
+    public void delete(@PathVariable Long id) {
+        edgeService.delete(id);
+    }
 }
+

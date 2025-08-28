@@ -1,23 +1,13 @@
 package com.wikigroup.desarrolloweb.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "activity")
 public class Activity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pk;
+    private Long id;
 
     private String name;
     private Double x;
@@ -28,14 +18,34 @@ public class Activity {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "process_id", nullable = false)
+    @JoinColumn(name = "process_id")
     private Process process;
 
-    @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Edge> outgoingEdges;
-
-    @OneToMany(mappedBy = "destiny", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Edge> incomingEdges;
-
     // Getters y setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Double getX() { return x; }
+    public void setX(Double x) { this.x = x; }
+
+    public Double getY() { return y; }
+    public void setY(Double y) { this.y = y; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Double getWidth() { return width; }
+    public void setWidth(Double width) { this.width = width; }
+
+    public Double getHeight() { return height; }
+    public void setHeight(Double height) { this.height = height; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Process getProcess() { return process; }
+    public void setProcess(Process process) { this.process = process; }
 }

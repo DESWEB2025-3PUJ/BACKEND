@@ -16,12 +16,20 @@ public class EdgeService {
         this.edgeRepository = edgeRepository;
     }
 
-    public List<Edge> findAll() { return edgeRepository.findAll(); }
+    public List<Edge> findAll() {
+        return edgeRepository.findAll();
+    }
 
-    public Optional<Edge> findById(Long id) { return edgeRepository.findById(id); }
+    public Optional<Edge> findById(Long id) {
+        return edgeRepository.findById(id);
+    }
 
-    public Edge save(Edge edge) { return edgeRepository.save(edge); }
+    public Edge save(Edge edge) {
+        return edgeRepository.save(edge);
+    }
 
-    public void delete(Long id) { edgeRepository.deleteById(id); }
+    public void delete(Long id) {
+        edgeRepository.deleteById(id);
+    }
 }
 

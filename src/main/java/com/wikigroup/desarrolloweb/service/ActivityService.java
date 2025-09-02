@@ -5,31 +5,34 @@ import com.wikigroup.desarrolloweb.repository.ActivityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ActivityService {
 
-    private final ActivityRepository activityRepository;
+    private final ActivityRepository repository;
 
-    public ActivityService(ActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
+    public ActivityService(ActivityRepository repository) {
+        this.repository = repository;
     }
 
     public List<Activity> findAll() {
-        return activityRepository.findAll();
+        return repository.findAll();
     }
 
-    public Optional<Activity> findById(Long id) {
-        return activityRepository.findById(id);
+    public Activity findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Activity not found with id " + id));
     }
 
     public Activity save(Activity activity) {
-        return activityRepository.save(activity);
+        return repository.save(activity);
     }
 
     public void delete(Long id) {
-        activityRepository.deleteById(id);
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Activity not found with id " + id);
+        }
+        repository.deleteById(id);
     }
 }
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "processes") 
+@Getter
 @Setter
 public class Process {
 

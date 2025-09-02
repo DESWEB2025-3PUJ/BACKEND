@@ -5,31 +5,35 @@ import com.wikigroup.desarrolloweb.repository.EdgeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EdgeService {
 
-    private final EdgeRepository edgeRepository;
+    private final EdgeRepository repository;
 
-    public EdgeService(EdgeRepository edgeRepository) {
-        this.edgeRepository = edgeRepository;
+    public EdgeService(EdgeRepository repository) {
+        this.repository = repository;
     }
 
     public List<Edge> findAll() {
-        return edgeRepository.findAll();
+        return repository.findAll();
     }
 
-    public Optional<Edge> findById(Long id) {
-        return edgeRepository.findById(id);
+    public Edge findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Edge not found with id " + id));
     }
 
     public Edge save(Edge edge) {
-        return edgeRepository.save(edge);
+        return repository.save(edge);
     }
 
     public void delete(Long id) {
-        edgeRepository.deleteById(id);
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Edge not found with id " + id);
+        }
+        repository.deleteById(id);
     }
 }
+
 

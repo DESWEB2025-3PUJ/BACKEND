@@ -5,30 +5,34 @@ import com.wikigroup.desarrolloweb.repository.ProcessRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProcessService {
 
-    private final ProcessRepository processRepository;
+    private final ProcessRepository repository;
 
-    public ProcessService(ProcessRepository processRepository) {
-        this.processRepository = processRepository;
+    public ProcessService(ProcessRepository repository) {
+        this.repository = repository;
     }
 
     public List<Process> findAll() {
-        return processRepository.findAll();
+        return repository.findAll();
     }
 
-    public Optional<Process> findById(Long id) {
-        return processRepository.findById(id);
+    public Process findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Process not found with id " + id));
     }
 
     public Process save(Process process) {
-        return processRepository.save(process);
+        return repository.save(process);
     }
 
     public void delete(Long id) {
-        processRepository.deleteById(id);
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Process not found with id " + id);
+        }
+        repository.deleteById(id);
     }
 }
+

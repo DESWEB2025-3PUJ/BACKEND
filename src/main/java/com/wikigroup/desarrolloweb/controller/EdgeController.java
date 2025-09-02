@@ -1,53 +1,80 @@
 package com.wikigroup.desarrolloweb.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.wikigroup.desarrolloweb.dtos.EdgeDto;
+import com.wikigroup.desarrolloweb.model.Activity;
 import com.wikigroup.desarrolloweb.model.Edge;
+import com.wikigroup.desarrolloweb.model.Process;
+import com.wikigroup.desarrolloweb.service.ActivityService;
 import com.wikigroup.desarrolloweb.service.EdgeService;
+import com.wikigroup.desarrolloweb.service.ProcessService;
+import org.modelmapper.ModelMapper;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/edges")
 public class EdgeController {
 
-    private final EdgeService edgeService;
+    private final EdgeService service;
+    private final ActivityService activityService;
+    private final ProcessService processService;
+    private final ModelMapper mapper;
 
-    public EdgeController(EdgeService edgeService) {
-        this.edgeService = edgeService;
+    public EdgeController(EdgeService service, ActivityService activityService, ProcessService processService, ModelMapper mapper) {
+        this.service = service;
+        this.activityService = activityService;
+        this.processService = processService;
+        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<Edge> getAll() {
-        return edgeService.findAll();
+    public List<EdgeDto> getAll() {
+        return service.findAll()
+                .stream()
+                .map(e -> mapper.map(e, EdgeDto.class))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Edge getById(@PathVariable Long id) {
-        return edgeService.findById(id).orElse(null);
+    public EdgeDto getById(@PathVariable Long id) {
+        Edge edge = service.findById(id);
+        return mapper.map(edge, EdgeDto.class);
     }
 
     @PostMapping
-    public Edge create(@RequestBody Edge edge) {
-        return edgeService.save(edge);
+    public EdgeDto create(@RequestBody EdgeDto dto) {
+        Activity source = activityService.findById(dto.getActivitySourceId());
+        Activity destiny = activityService.findById(dto.getActivityDestinyId());
+        Process process = processService.findById(dto.getProcessId());
+
+        Edge edge = mapper.map(dto, Edge.class);
+        edge.setActivitySource(source);
+        edge.setActivityDestiny(destiny);
+        edge.setProcess(process);
+
+        return mapper.map(service.save(edge), EdgeDto.class);
     }
 
     @PutMapping("/{id}")
-    public Edge update(@PathVariable Long id, @RequestBody Edge edge) {
+    public EdgeDto update(@PathVariable Long id, @RequestBody EdgeDto dto) {
+        Activity source = activityService.findById(dto.getActivitySourceId());
+        Activity destiny = activityService.findById(dto.getActivityDestinyId());
+        Process process = processService.findById(dto.getProcessId());
+
+        Edge edge = mapper.map(dto, Edge.class);
         edge.setId(id);
-        return edgeService.save(edge);
+        edge.setActivitySource(source);
+        edge.setActivityDestiny(destiny);
+        edge.setProcess(process);
+
+        return mapper.map(service.save(edge), EdgeDto.class);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        edgeService.delete(id);
+        service.delete(id);
     }
 }
 

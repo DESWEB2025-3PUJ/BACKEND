@@ -1,44 +1,55 @@
 package com.wikigroup.desarrolloweb.controller;
 
+import com.wikigroup.desarrolloweb.dtos.ProcessDto;
 import com.wikigroup.desarrolloweb.model.Process;
 import com.wikigroup.desarrolloweb.service.ProcessService;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/processes")
 public class ProcessController {
 
-    private final ProcessService processService;
+    private final ProcessService service;
+    private final ModelMapper mapper;
 
-    public ProcessController(ProcessService processService) {
-        this.processService = processService;
+    public ProcessController(ProcessService service, ModelMapper mapper) {
+        this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<Process> getAll() {
-        return processService.findAll();
+    public List<ProcessDto> getAll() {
+        return service.findAll()
+                .stream()
+                .map(p -> mapper.map(p, ProcessDto.class))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Process getById(@PathVariable Long id) {
-        return processService.findById(id).orElse(null);
+    public ProcessDto getById(@PathVariable Long id) {
+        return mapper.map(service.findById(id), ProcessDto.class);
     }
 
     @PostMapping
-    public Process create(@RequestBody Process process) {
-        return processService.save(process);
+    public ProcessDto create(@RequestBody ProcessDto dto) {
+        Process process = mapper.map(dto, Process.class);
+        return mapper.map(service.save(process), ProcessDto.class);
     }
 
     @PutMapping("/{id}")
-    public Process update(@PathVariable Long id, @RequestBody Process process) {
+    public ProcessDto update(@PathVariable Long id, @RequestBody ProcessDto dto) {
+        Process process = mapper.map(dto, Process.class);
         process.setId(id);
-        return processService.save(process);
+        return mapper.map(service.save(process), ProcessDto.class);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        processService.delete(id);
+        service.delete(id);
     }
 }
+

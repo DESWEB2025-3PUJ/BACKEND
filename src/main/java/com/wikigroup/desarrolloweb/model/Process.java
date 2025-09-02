@@ -25,5 +25,15 @@ public class Process {
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> edges;
+    
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Gateway> gateways;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
+
+    private String categoria;
+    private String estado; // borrador, publicado
 }
 

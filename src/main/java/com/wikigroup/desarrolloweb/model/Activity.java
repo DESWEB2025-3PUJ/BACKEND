@@ -26,4 +26,9 @@ public class Activity {
     @JoinColumn(name = "process_id")
     private Process process;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    private String tipoActividad;
 }

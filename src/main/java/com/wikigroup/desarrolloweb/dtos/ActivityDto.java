@@ -16,6 +16,8 @@ public class ActivityDto {
     private Double width;
     private Double height;
     private String status;
+    private String tipoActividad;
     private Long processId;
+    private Long roleId;
 }
 

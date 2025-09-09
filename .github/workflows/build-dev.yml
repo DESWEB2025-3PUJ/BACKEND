@@ -34,13 +34,13 @@ jobs:
       run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
     - name: Build Docker image
-      run: docker build -f Dockerfile -t ghcr.io/${OWNER_LC}/<backend>:latest .
+      run: docker build -f Dockerfile -t ghcr.io/${OWNER_LC}/backend:latest .
 
     - name: Push Docker image
-      run: docker push ghcr.io/${OWNER_LC}/<backend>:latest
+      run: docker push ghcr.io/${OWNER_LC}/backend:latest
 
     - name: Print pushed image URL
-      run: "echo 'Imagen publicada: ghcr.io/${OWNER_LC}/<backend>:latest'"
+      run: "echo 'Imagen publicada: ghcr.io/${OWNER_LC}/backend:latest'"
 
 
   deploy-onpremise:

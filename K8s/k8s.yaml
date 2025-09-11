@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/$mateomoreno2004/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
+          image: ghcr.io/mateomoreno2004/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
           ports:
             - containerPort: 8080
 
@@ -36,8 +36,8 @@ spec:
     app: wikigroup
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
   type: ClusterIP
 
 ---
@@ -60,4 +60,4 @@ spec:
               service:
                 name: backend
                 port:
-                  number: 80
+                  number: 8080

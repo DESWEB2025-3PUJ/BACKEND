@@ -52,6 +52,6 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
     - name: Apply Kubernetes deployment
-      run: sudo microk8s kubectl apply -f k8s/k8s.yaml
+      run: sudo microk8s kubectl apply -f K8s/k8s.yaml
     - name: Restart Kubernetes deployment
       run: sudo microk8s kubectl rollout restart deployment/<backend> -n <wikiGroup>

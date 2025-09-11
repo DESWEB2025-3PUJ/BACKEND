@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/${MateoMoreno2004}/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
+          image: ghcr.io/$mateomoreno2004/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
           ports:
             - containerPort: 8080
 

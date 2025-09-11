@@ -19,7 +19,7 @@ spec:
       labels:
         app: wikigroup
     spec:
-      imagePulleSecrets:
+      imagePullSecrets:
         - name: ghcr-secret
       containers:
         - name: backend

@@ -54,4 +54,4 @@ jobs:
     - name: Apply Kubernetes deployment
       run: sudo microk8s kubectl apply -f K8s/k8s.yaml
     - name: Restart Kubernetes deployment
-      run: sudo microk8s kubectl rollout restart deployment/<backend> -n <wikigroup>
+      run: sudo microk8s kubectl rollout restart deployment/backend -n wikigroup

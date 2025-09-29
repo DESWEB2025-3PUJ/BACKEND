@@ -1,0 +1,142 @@
+[
+  {
+    "title": "RF1 - Registro de empresa",
+    "body": "El sistema debe permitir registrar empresas con nombre, NIT y correo de contacto.\n\nHerramientas:\n- API REST (Spring Boot o Node.js)\n- Base de datos PostgreSQL, tabla empresas\n- Validación unicidad de NIT\n\nCriterios de aceptación:\n- Se solicita nombre de empresa, NIT y correo\n- Se genera un usuario administrador inicial\n- La empresa queda registrada como entidad independiente",
+    "labels": ["requisito funcional", "autenticación", "alta prioridad"]
+  },
+  {
+    "title": "RF2 - Registro de usuario en empresa",
+    "body": "El sistema debe permitir a administradores crear y gestionar usuarios.\n\nHerramientas:\n- API REST con JWT\n- PostgreSQL, tabla usuarios con FK a empresas\n- Roles: admin, editor, lectura\n\nCriterios de aceptación:\n- Invitar usuarios por correo\n- Asignar roles\n- Procesos creados pertenecen a la empresa",
+    "labels": ["requisito funcional", "usuarios"]
+  },
+  {
+    "title": "RF3 - Inicio de sesión",
+    "body": "El sistema debe validar credenciales de acceso.\n\nHerramientas:\n- Spring Security o Passport.js\n- Hash de contraseñas con bcrypt\n- Autenticación con JWT/OAuth2\n\nCriterios de aceptación:\n- Validación de correo y contraseña\n- Acceso restringido a la empresa correspondiente",
+    "labels": ["requisito funcional", "autenticación"]
+  },
+  {
+    "title": "RF4 - Crear proceso",
+    "body": "El sistema debe permitir crear procesos con nombre, descripción y categoría.\n\nHerramientas:\n- API REST\n- PostgreSQL, tabla procesos\n\nCriterios de aceptación:\n- El proceso queda asociado a la empresa\n- El proceso puede estar en estado borrador o publicado",
+    "labels": ["requisito funcional", "procesos"]
+  },
+  {
+    "title": "RF5 - Editar proceso",
+    "body": "El sistema debe permitir editar procesos con historial.\n\nHerramientas:\n- Tabla historial_procesos en PostgreSQL\n\nCriterios de aceptación:\n- Solo usuarios con permisos de edición pueden modificar\n- Se guarda historial de cambios",
+    "labels": ["requisito funcional", "procesos"]
+  },
+  {
+    "title": "RF6 - Eliminar proceso",
+    "body": "El sistema debe permitir eliminar procesos con borrado lógico.\n\nHerramientas:\n- PostgreSQL (campo activo=false)\n\nCriterios de aceptación:\n- Confirmación antes de eliminar\n- El proceso queda inactivo para mantener trazabilidad",
+    "labels": ["requisito funcional", "procesos"]
+  },
+  {
+    "title": "RF7 - Consultar procesos",
+    "body": "El sistema debe permitir consultar procesos con filtros.\n\nHerramientas:\n- PostgreSQL con índices\n- Elasticsearch opcional para búsquedas avanzadas\n\nCriterios de aceptación:\n- Lista con búsqueda y filtros (estado, categoría)\n- Posibilidad de visualizar un proceso y sus elementos",
+    "labels": ["requisito funcional", "procesos"]
+  },
+  {
+    "title": "RF8 - Crear actividad",
+    "body": "El sistema debe permitir crear actividades dentro de procesos.\n\nHerramientas:\n- PostgreSQL, tabla actividades con FK a procesos\n\nCriterios de aceptación:\n- Se especifica nombre, tipo, descripción y rol responsable\n- La actividad queda vinculada al proceso",
+    "labels": ["requisito funcional", "actividades"]
+  },
+  {
+    "title": "RF9 - Editar actividad",
+    "body": "El sistema debe permitir editar actividades y registrar cambios.\n\nHerramientas:\n- Tabla historial_actividades\n\nCriterios de aceptación:\n- Los cambios se guardan en el historial del proceso",
+    "labels": ["requisito funcional", "actividades"]
+  },
+  {
+    "title": "RF10 - Eliminar actividad",
+    "body": "El sistema debe permitir eliminar actividades con confirmación.\n\nCriterios de aceptación:\n- Se solicita confirmación antes de eliminar\n- El flujo del proceso se ajusta automáticamente",
+    "labels": ["requisito funcional", "actividades"]
+  },
+  {
+    "title": "RF11 - Crear arco",
+    "body": "El sistema debe permitir crear arcos entre actividades/gateways.\n\nHerramientas:\n- PostgreSQL, tabla arcos (origen, destino, proceso_id)\n\nCriterios de aceptación:\n- Se define actividad origen y destino\n- El arco queda visible en el diagrama del proceso",
+    "labels": ["requisito funcional", "arcos"]
+  },
+  {
+    "title": "RF12 - Editar arco",
+    "body": "El sistema debe permitir editar arcos existentes.\n\nCriterios de aceptación:\n- Se permite cambiar origen/destino",
+    "labels": ["requisito funcional", "arcos"]
+  },
+  {
+    "title": "RF13 - Eliminar arco",
+    "body": "El sistema debe permitir eliminar arcos con confirmación.\n\nCriterios de aceptación:\n- Confirmación previa a la eliminación\n- El diagrama se ajusta automáticamente",
+    "labels": ["requisito funcional", "arcos"]
+  },
+  {
+    "title": "RF14 - Crear gateway",
+    "body": "El sistema debe permitir crear gateways de decisión.\n\nHerramientas:\n- PostgreSQL, tabla gateways\n\nCriterios de aceptación:\n- Se permite crear gateways exclusivos, paralelos o inclusivos\n- Los arcos salientes deben estar definidos",
+    "labels": ["requisito funcional", "gateways"]
+  },
+  {
+    "title": "RF15 - Editar gateway",
+    "body": "El sistema debe permitir editar gateways existentes.\n\nCriterios de aceptación:\n- Se pueden actualizar tipos y condiciones de salida",
+    "labels": ["requisito funcional", "gateways"]
+  },
+  {
+    "title": "RF16 - Eliminar gateway",
+    "body": "El sistema debe permitir eliminar gateways con confirmación.\n\nCriterios de aceptación:\n- Confirmación antes de eliminar\n- El flujo debe mantenerse consistente",
+    "labels": ["requisito funcional", "gateways"]
+  },
+  {
+    "title": "RF17 - Crear rol de proceso",
+    "body": "El sistema debe permitir crear roles de proceso.\n\nHerramientas:\n- PostgreSQL, tabla roles_proceso\n\nCriterios de aceptación:\n- Se registra nombre y descripción\n- El rol puede usarse en múltiples procesos",
+    "labels": ["requisito funcional", "roles"]
+  },
+  {
+    "title": "RF18 - Editar rol de proceso",
+    "body": "El sistema debe permitir editar roles de proceso.\n\nCriterios de aceptación:\n- Actualizar información sin afectar historial de procesos\n- Procesos mantienen la referencia al rol modificado",
+    "labels": ["requisito funcional", "roles"]
+  },
+  {
+    "title": "RF19 - Eliminar rol de proceso",
+    "body": "El sistema debe permitir eliminar roles no usados.\n\nCriterios de aceptación:\n- Validar que no esté asignado a ninguna actividad\n- Solicitar confirmación previa",
+    "labels": ["requisito funcional", "roles"]
+  },
+  {
+    "title": "RF20 - Consultar roles de proceso",
+    "body": "El sistema debe permitir consultar roles de proceso.\n\nCriterios de aceptación:\n- Listado con nombre y descripción\n- Mostrar procesos y actividades donde se usa",
+    "labels": ["requisito funcional", "roles"]
+  },
+  {
+    "title": "RNF1 - Trazabilidad de cambios",
+    "body": "El sistema debe garantizar trazabilidad en procesos y actividades.\n\nHerramientas:\n- Hibernate Envers o triggers en PostgreSQL\n\nCriterios:\n- Cada edición debe registrarse en historial\n- No se pierde información previa",
+    "labels": ["requisito no funcional", "historial"]
+  },
+  {
+    "title": "RNF2 - Validación de datos",
+    "body": "El sistema debe validar datos obligatorios en formularios.\n\nHerramientas:\n- Joi (Node.js) o Hibernate Validator (Java)\n\nCriterios:\n- Validación en backend y frontend",
+    "labels": ["requisito no funcional", "validación"]
+  },
+  {
+    "title": "RNF3 - Seguridad de acceso",
+    "body": "El sistema debe proteger la seguridad de acceso.\n\nHerramientas:\n- Autenticación con JWT\n- Autorización basada en roles",
+    "labels": ["requisito no funcional", "seguridad"]
+  },
+  {
+    "title": "RNF4 - Confirmaciones antes de eliminar",
+    "body": "El sistema debe solicitar confirmación antes de eliminar entidades.\n\nHerramientas:\n- Modales de confirmación en UI",
+    "labels": ["requisito no funcional", "usabilidad"]
+  },
+  {
+    "title": "RNF5 - Rendimiento en consultas",
+    "body": "El sistema debe ofrecer tiempos de respuesta adecuados.\n\nHerramientas:\n- Índices en PostgreSQL\n\nCriterios:\n- Respuesta <2s en consultas estándar",
+    "labels": ["requisito no funcional", "rendimiento"]
+  },
+  {
+    "title": "RNF6 - Consistencia del flujo",
+    "body": "El sistema debe mantener consistencia del flujo de procesos.\n\nHerramientas:\n- Validaciones de negocio en backend",
+    "labels": ["requisito no funcional", "procesos"]
+  },
+  {
+    "title": "RNF7 - Usabilidad",
+    "body": "La interfaz debe ser usable e intuitiva.\n\nHerramientas:\n- React + TailwindCSS\n- BPMN.js o mxGraph para diagramas",
+    "labels": ["requisito no funcional", "usabilidad"]
+  },
+  {
+    "title": "RNF8 - Multiusuario y concurrencia",
+    "body": "El sistema debe soportar múltiples usuarios concurrentes.\n\nHerramientas:\n- PostgreSQL con control de transacciones\n- Optimistic locking",
+    "labels": ["requisito no funcional", "concurrencia"]
+  }
+]

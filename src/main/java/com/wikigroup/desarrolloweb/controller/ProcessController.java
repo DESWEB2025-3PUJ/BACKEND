@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
 public class ProcessController {
 
     private final ProcessService service;
+    private final RoleService roleService; 
     private final ModelMapper mapper;
 
-    public ProcessController(ProcessService service, ModelMapper mapper) {
+    public ProcessController(ProcessService service, RoleService roleService, ModelMapper mapper) {
         this.service = service;
+        this.roleService = roleService;
         this.mapper = mapper;
     }
 
@@ -37,6 +39,12 @@ public class ProcessController {
     @PostMapping
     public ProcessDto create(@RequestBody ProcessDto dto) {
         Process process = mapper.map(dto, Process.class);
+
+        // ✅ usar roleId del DTO
+        if (dto.getRoleId() != null) {
+            process.setRole(roleService.findById(dto.getRoleId()));
+        }
+
         return mapper.map(service.save(process), ProcessDto.class);
     }
 
@@ -44,6 +52,11 @@ public class ProcessController {
     public ProcessDto update(@PathVariable Long id, @RequestBody ProcessDto dto) {
         Process process = mapper.map(dto, Process.class);
         process.setId(id);
+
+        if (dto.getRoleId() != null) {
+            process.setRole(roleService.findById(dto.getRoleId()));
+        }
+
         return mapper.map(service.save(process), ProcessDto.class);
     }
 

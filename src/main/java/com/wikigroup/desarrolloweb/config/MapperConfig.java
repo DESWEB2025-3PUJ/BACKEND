@@ -26,6 +26,11 @@ public class MapperConfig {
             m.map(src -> src.getEmpresa().getId(), RoleDto::setEmpresaId);
         });
 
+        // Process
+        mapper.typeMap(Process.class, ProcessDto.class).addMappings(m -> {
+            m.map(src -> src.getRole().getId(), ProcessDto::setRoleId);
+        });
+
         // Gateway
         mapper.typeMap(Gateway.class, GatewayDto.class).addMappings(m -> {
             m.map(src -> src.getProcess().getId(), GatewayDto::setProcessId);

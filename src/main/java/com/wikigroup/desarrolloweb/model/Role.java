@@ -20,4 +20,8 @@ public class Role {
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Process> processes;
+    
 }

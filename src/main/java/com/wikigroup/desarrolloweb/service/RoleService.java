@@ -19,6 +19,11 @@ public class RoleService {
         return repository.findAll();
     }
 
+    public List<Process> findProcessesByRole(Long roleId) {
+    Role role = findById(roleId);
+    return role.getProcesses();
+    }
+
     public Role findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with id " + id));

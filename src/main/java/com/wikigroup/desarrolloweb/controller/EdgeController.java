@@ -53,7 +53,7 @@ public class EdgeController {
         edge.setActivitySource(source);
         edge.setActivityDestiny(destiny);
         edge.setProcess(process);
-
+        
         return mapper.map(service.save(edge), EdgeDto.class);
     }
 

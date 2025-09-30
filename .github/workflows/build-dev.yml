@@ -21,7 +21,7 @@ jobs:
       run: "echo 'Rama actual: ${{ github.ref }}'"
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Log in to GHCR
       uses: docker/login-action@v3
@@ -50,7 +50,9 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+
+      uses: actions/checkout@v4
+
     - name: Create namespace if not exists
       run: sudo microk8s kubectl create namespace wikigroup --dry-run=client -o yaml | sudo microk8s kubectl apply -f -
     - name: Apply Kubernetes deployment

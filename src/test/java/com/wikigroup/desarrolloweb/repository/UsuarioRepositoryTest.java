@@ -1,8 +1,7 @@
 package com.wikigroup.desarrolloweb.repository;
 
-import com.wikigroup.desarrolloweb.model.Empresa;
 import com.wikigroup.desarrolloweb.model.Usuario;
-import org.junit.jupiter.api.BeforeEach;
+import com.wikigroup.desarrolloweb.model.Empresa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -12,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -24,113 +23,124 @@ class UsuarioRepositoryTest {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private Empresa empresa;
-    private Usuario usuario;
-
-    @BeforeEach
-    void setUp() {
-        empresa = new Empresa();
+    @Test
+    void testSave() {
+        // Given
+        Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
-        empresa = entityManager.persistAndFlush(empresa);
+        entityManager.persistAndFlush(empresa);
 
-        usuario = new Usuario();
+        Usuario usuario = new Usuario();
         usuario.setNombre("Test User");
         usuario.setEmail("test@example.com");
         usuario.setPassword("password123");
         usuario.setEmpresa(empresa);
-    }
 
-    @Test
-    void save_ShouldPersistUsuario() {
         // When
         Usuario savedUsuario = usuarioRepository.save(usuario);
 
         // Then
-        assertNotNull(savedUsuario.getId());
-        assertEquals("Test User", savedUsuario.getNombre());
-        assertEquals("test@example.com", savedUsuario.getEmail());
-        assertEquals("password123", savedUsuario.getPassword());
-        assertEquals(empresa.getId(), savedUsuario.getEmpresa().getId());
+        assertThat(savedUsuario.getId()).isNotNull();
+        assertThat(savedUsuario.getNombre()).isEqualTo("Test User");
+        assertThat(savedUsuario.getEmail()).isEqualTo("test@example.com");
     }
 
     @Test
-    void findById_WhenUsuarioExists_ShouldReturnUsuario() {
+    void testFindById() {
         // Given
-        Usuario savedUsuario = entityManager.persistAndFlush(usuario);
+        Empresa empresa = new Empresa();
+        empresa.setNombre("Test Company");
+        empresa.setDescripcion("Test Description");
+        entityManager.persistAndFlush(empresa);
 
-        // When
-        Optional<Usuario> found = usuarioRepository.findById(savedUsuario.getId());
-
-        // Then
-        assertTrue(found.isPresent());
-        assertEquals("Test User", found.get().getNombre());
-        assertEquals("test@example.com", found.get().getEmail());
-    }
-
-    @Test
-    void findById_WhenUsuarioDoesNotExist_ShouldReturnEmpty() {
-        // When
-        Optional<Usuario> found = usuarioRepository.findById(999L);
-
-        // Then
-        assertFalse(found.isPresent());
-    }
-
-    @Test
-    void findAll_ShouldReturnAllUsuarios() {
-        // Given
-        Usuario usuario2 = new Usuario();
-        usuario2.setNombre("Test User 2");
-        usuario2.setEmail("test2@example.com");
-        usuario2.setPassword("password456");
-        usuario2.setEmpresa(empresa);
-
+        Usuario usuario = new Usuario();
+        usuario.setNombre("Test User");
+        usuario.setEmail("test@example.com");
+        usuario.setPassword("password123");
+        usuario.setEmpresa(empresa);
         entityManager.persistAndFlush(usuario);
+
+        // When
+        Optional<Usuario> foundUsuario = usuarioRepository.findById(usuario.getId());
+
+        // Then
+        assertThat(foundUsuario).isPresent();
+        assertThat(foundUsuario.get().getNombre()).isEqualTo("Test User");
+    }
+
+    @Test
+    void testFindAll() {
+        // Given
+        Empresa empresa = new Empresa();
+        empresa.setNombre("Test Company");
+        empresa.setDescripcion("Test Description");
+        entityManager.persistAndFlush(empresa);
+
+        Usuario usuario1 = new Usuario();
+        usuario1.setNombre("User 1");
+        usuario1.setEmail("user1@example.com");
+        usuario1.setPassword("password123");
+        usuario1.setEmpresa(empresa);
+        entityManager.persistAndFlush(usuario1);
+
+        Usuario usuario2 = new Usuario();
+        usuario2.setNombre("User 2");
+        usuario2.setEmail("user2@example.com");
+        usuario2.setPassword("password123");
+        usuario2.setEmpresa(empresa);
         entityManager.persistAndFlush(usuario2);
 
         // When
         List<Usuario> usuarios = usuarioRepository.findAll();
 
         // Then
-        assertEquals(2, usuarios.size());
-        assertTrue(usuarios.stream().anyMatch(u -> u.getNombre().equals("Test User")));
-        assertTrue(usuarios.stream().anyMatch(u -> u.getNombre().equals("Test User 2")));
+        assertThat(usuarios).hasSize(2);
     }
 
     @Test
-    void deleteById_ShouldRemoveUsuario() {
+    void testDeleteById() {
         // Given
-        Usuario savedUsuario = entityManager.persistAndFlush(usuario);
-        Long usuarioId = savedUsuario.getId();
+        Empresa empresa = new Empresa();
+        empresa.setNombre("Test Company");
+        empresa.setDescripcion("Test Description");
+        entityManager.persistAndFlush(empresa);
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre("Test User");
+        usuario.setEmail("test@example.com");
+        usuario.setPassword("password123");
+        usuario.setEmpresa(empresa);
+        entityManager.persistAndFlush(usuario);
+
+        Long usuarioId = usuario.getId();
 
         // When
         usuarioRepository.deleteById(usuarioId);
         entityManager.flush();
 
         // Then
-        Optional<Usuario> found = usuarioRepository.findById(usuarioId);
-        assertFalse(found.isPresent());
+        Optional<Usuario> deletedUsuario = usuarioRepository.findById(usuarioId);
+        assertThat(deletedUsuario).isEmpty();
     }
 
     @Test
-    void existsById_WhenUsuarioExists_ShouldReturnTrue() {
+    void testExistsById() {
         // Given
-        Usuario savedUsuario = entityManager.persistAndFlush(usuario);
+        Empresa empresa = new Empresa();
+        empresa.setNombre("Test Company");
+        empresa.setDescripcion("Test Description");
+        entityManager.persistAndFlush(empresa);
 
-        // When
-        boolean exists = usuarioRepository.existsById(savedUsuario.getId());
+        Usuario usuario = new Usuario();
+        usuario.setNombre("Test User");
+        usuario.setEmail("test@example.com");
+        usuario.setPassword("password123");
+        usuario.setEmpresa(empresa);
+        entityManager.persistAndFlush(usuario);
 
-        // Then
-        assertTrue(exists);
-    }
-
-    @Test
-    void existsById_WhenUsuarioDoesNotExist_ShouldReturnFalse() {
-        // When
-        boolean exists = usuarioRepository.existsById(999L);
-
-        // Then
-        assertFalse(exists);
+        // When & Then
+        assertThat(usuarioRepository.existsById(usuario.getId())).isTrue();
+        assertThat(usuarioRepository.existsById(999L)).isFalse();
     }
 }

@@ -1,55 +1,50 @@
 package com.wikigroup.desarrolloweb.controller;
 
 import com.wikigroup.desarrolloweb.dtos.ProcessDto;
-import com.wikigroup.desarrolloweb.model.Process;
 import com.wikigroup.desarrolloweb.service.ProcessService;
-import org.modelmapper.ModelMapper;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/processes")
 public class ProcessController {
 
     private final ProcessService service;
-    private final ModelMapper mapper;
 
-    public ProcessController(ProcessService service, ModelMapper mapper) {
+    public ProcessController(ProcessService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<ProcessDto> getAll() {
-        return service.findAll()
-                .stream()
-                .map(p -> mapper.map(p, ProcessDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<ProcessDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ProcessDto getById(@PathVariable Long id) {
-        return mapper.map(service.findById(id), ProcessDto.class);
+    public ResponseEntity<ProcessDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public ProcessDto create(@RequestBody ProcessDto dto) {
-        Process process = mapper.map(dto, Process.class);
-        return mapper.map(service.save(process), ProcessDto.class);
+    public ResponseEntity<ProcessDto> create(@Valid @RequestBody ProcessDto dto) {
+        ProcessDto created = service.create(dto);
+        return ResponseEntity.created(URI.create("/api/processes/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public ProcessDto update(@PathVariable Long id, @RequestBody ProcessDto dto) {
-        Process process = mapper.map(dto, Process.class);
-        process.setId(id);
-        return mapper.map(service.save(process), ProcessDto.class);
+    public ResponseEntity<ProcessDto> update(@PathVariable Long id, @Valid @RequestBody ProcessDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
+
 

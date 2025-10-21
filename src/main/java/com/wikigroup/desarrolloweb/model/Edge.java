@@ -27,6 +27,6 @@ public class Edge {
 
     @ManyToOne
     @JoinColumn(name = "process_id")
-    private Process process;
+    private BpmProcess process;
 }
 

@@ -1,64 +1,49 @@
 package com.wikigroup.desarrolloweb.controller;
 
 import com.wikigroup.desarrolloweb.dtos.GatewayDto;
-import com.wikigroup.desarrolloweb.model.Gateway;
-import com.wikigroup.desarrolloweb.model.Process;
 import com.wikigroup.desarrolloweb.service.GatewayService;
-import com.wikigroup.desarrolloweb.service.ProcessService;
-import org.modelmapper.ModelMapper;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/gateways")
 public class GatewayController {
 
     private final GatewayService service;
-    private final ProcessService processService;
-    private final ModelMapper mapper;
 
-    public GatewayController(GatewayService service, ProcessService processService, ModelMapper mapper) {
+    public GatewayController(GatewayService service) {
         this.service = service;
-        this.processService = processService;
-        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<GatewayDto> getAll() {
-        return service.findAll()
-                .stream()
-                .map(g -> mapper.map(g, GatewayDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<GatewayDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public GatewayDto getById(@PathVariable Long id) {
-        Gateway gateway = service.findById(id);
-        return mapper.map(gateway, GatewayDto.class);
+    public ResponseEntity<GatewayDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public GatewayDto create(@RequestBody GatewayDto dto) {
-        Process process = processService.findById(dto.getProcessId());
-        Gateway gateway = mapper.map(dto, Gateway.class);
-        gateway.setProcess(process);
-        return mapper.map(service.save(gateway), GatewayDto.class);
+    public ResponseEntity<GatewayDto> create(@Valid @RequestBody GatewayDto dto) {
+        GatewayDto created = service.create(dto);
+        return ResponseEntity.created(URI.create("/api/gateways/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public GatewayDto update(@PathVariable Long id, @RequestBody GatewayDto dto) {
-        Process process = processService.findById(dto.getProcessId());
-        Gateway gateway = mapper.map(dto, Gateway.class);
-        gateway.setId(id);
-        gateway.setProcess(process);
-        return mapper.map(service.save(gateway), GatewayDto.class);
+    public ResponseEntity<GatewayDto> update(@PathVariable Long id, @Valid @RequestBody GatewayDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

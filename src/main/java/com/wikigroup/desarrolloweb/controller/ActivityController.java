@@ -1,66 +1,49 @@
 package com.wikigroup.desarrolloweb.controller;
 
 import com.wikigroup.desarrolloweb.dtos.ActivityDto;
-import com.wikigroup.desarrolloweb.model.Activity;
-import com.wikigroup.desarrolloweb.model.Process;
 import com.wikigroup.desarrolloweb.service.ActivityService;
-import com.wikigroup.desarrolloweb.service.ProcessService;
-import org.modelmapper.ModelMapper;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/activities")
 public class ActivityController {
 
     private final ActivityService service;
-    private final ProcessService processService;
-    private final ModelMapper mapper;
 
-    public ActivityController(ActivityService service, ProcessService processService, ModelMapper mapper) {
+    public ActivityController(ActivityService service) {
         this.service = service;
-        this.processService = processService;
-        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<ActivityDto> getAll() {
-        return service.findAll()
-                .stream()
-                .map(a -> mapper.map(a, ActivityDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<ActivityDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ActivityDto getById(@PathVariable Long id) {
-        Activity activity = service.findById(id);
-        return mapper.map(activity, ActivityDto.class);
+    public ResponseEntity<ActivityDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public ActivityDto create(@RequestBody ActivityDto dto) {
-        Process process = processService.findById(dto.getProcessId());
-        Activity activity = mapper.map(dto, Activity.class);
-        activity.setProcess(process);
-        return mapper.map(service.save(activity), ActivityDto.class);
+    public ResponseEntity<ActivityDto> create(@Valid @RequestBody ActivityDto dto) {
+        ActivityDto created = service.create(dto);
+        return ResponseEntity.created(URI.create("/api/activities/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public ActivityDto update(@PathVariable Long id, @RequestBody ActivityDto dto) {
-        Process process = processService.findById(dto.getProcessId());
-        Activity activity = mapper.map(dto, Activity.class);
-        activity.setId(id);
-        activity.setProcess(process);
-        return mapper.map(service.save(activity), ActivityDto.class);
+    public ResponseEntity<ActivityDto> update(@PathVariable Long id, @Valid @RequestBody ActivityDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
-
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
-
 

@@ -1,21 +1,22 @@
 package com.wikigroup.desarrolloweb.service;
 
+import com.wikigroup.desarrolloweb.dtos.EmpresaDto;
 import com.wikigroup.desarrolloweb.model.Empresa;
 import com.wikigroup.desarrolloweb.repository.EmpresaRepository;
+import com.wikigroup.desarrolloweb.shared.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,10 +25,16 @@ class EmpresaServiceTest {
     @Mock
     private EmpresaRepository empresaRepository;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     @InjectMocks
-    private EmpresaService empresaService;
+    private EmpresaService empresaService; // usa constructor (repo, mapper)
 
     private Empresa empresa;
+    private Empresa empresa2;
+    private EmpresaDto empresaDto;
+    private EmpresaDto empresaDto2;
 
     @BeforeEach
     void setUp() {
@@ -35,97 +42,175 @@ class EmpresaServiceTest {
         empresa.setId(1L);
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
-    }
 
-    @Test
-    void findAll_ShouldReturnAllEmpresas() {
-        // Given
-        Empresa empresa2 = new Empresa();
+        empresa2 = new Empresa();
         empresa2.setId(2L);
         empresa2.setNombre("Test Company 2");
         empresa2.setDescripcion("Test Description 2");
-        
-        List<Empresa> empresas = Arrays.asList(empresa, empresa2);
-        when(empresaRepository.findAll()).thenReturn(empresas);
 
-        // When
-        List<Empresa> result = empresaService.findAll();
+        empresaDto = new EmpresaDto();
+        empresaDto.setId(1L);
+        empresaDto.setNombre("Test Company");
+        empresaDto.setDescripcion("Test Description");
 
-        // Then
+        empresaDto2 = new EmpresaDto();
+        empresaDto2.setId(2L);
+        empresaDto2.setNombre("Test Company 2");
+        empresaDto2.setDescripcion("Test Description 2");
+    }
+
+    @Test
+    void getAll_ShouldReturnAllEmpresasAsDtos() {
+        when(empresaRepository.findAll()).thenReturn(List.of(empresa, empresa2));
+        when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
+        when(modelMapper.map(empresa2, EmpresaDto.class)).thenReturn(empresaDto2);
+
+        List<EmpresaDto> result = empresaService.getAll();
+
         assertEquals(2, result.size());
         assertEquals("Test Company", result.get(0).getNombre());
         assertEquals("Test Company 2", result.get(1).getNombre());
-        verify(empresaRepository, times(1)).findAll();
+
+        verify(empresaRepository).findAll();
+        verify(modelMapper).map(empresa, EmpresaDto.class);
+        verify(modelMapper).map(empresa2, EmpresaDto.class);
+        verifyNoMoreInteractions(empresaRepository, modelMapper);
     }
 
     @Test
-    void findById_WhenEmpresaExists_ShouldReturnEmpresa() {
-        // Given
+    void getById_WhenExists_ShouldReturnDto() {
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
 
-        // When
-        Empresa result = empresaService.findById(1L);
+        EmpresaDto result = empresaService.getById(1L);
 
-        // Then
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Test Company", result.getNombre());
-        assertEquals("Test Description", result.getDescripcion());
-        verify(empresaRepository, times(1)).findById(1L);
+
+        verify(empresaRepository).findById(1L);
+        verify(modelMapper).map(empresa, EmpresaDto.class);
+        verifyNoMoreInteractions(empresaRepository, modelMapper);
     }
 
     @Test
-    void findById_WhenEmpresaDoesNotExist_ShouldThrowException() {
-        // Given
+    void getById_WhenNotExists_ShouldThrowNotFound() {
         when(empresaRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> empresaService.findById(1L));
-        
-        assertEquals("Empresa not found with id 1", exception.getMessage());
-        verify(empresaRepository, times(1)).findById(1L);
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> empresaService.getById(1L));
+
+        assertEquals("Empresa not found with id 1", ex.getMessage());
+        verify(empresaRepository).findById(1L);
+        verifyNoMoreInteractions(empresaRepository);
+        verifyNoInteractions(modelMapper);
     }
 
     @Test
-    void save_ShouldReturnSavedEmpresa() {
-        // Given
-        when(empresaRepository.save(any(Empresa.class))).thenReturn(empresa);
+    void findEntityById_WhenExists_ShouldReturnEntity() {
+        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
 
-        // When
-        Empresa result = empresaService.save(empresa);
+        Empresa result = empresaService.findEntityById(1L);
 
-        // Then
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+
+        verify(empresaRepository).findById(1L);
+        verifyNoMoreInteractions(empresaRepository);
+    }
+
+    @Test
+    void findEntityById_WhenNotExists_ShouldThrowNotFound() {
+        when(empresaRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> empresaService.findEntityById(1L));
+
+        assertEquals("Empresa not found with id 1", ex.getMessage());
+        verify(empresaRepository).findById(1L);
+        verifyNoMoreInteractions(empresaRepository);
+    }
+
+    @Test
+    void create_ShouldMapSaveAndReturnDto() {
+        // map DTO -> entity
+        when(modelMapper.map(any(EmpresaDto.class), eq(Empresa.class))).thenReturn(empresa);
+        // repo save -> entity
+        when(empresaRepository.save(empresa)).thenReturn(empresa);
+        // map entity -> DTO
+        when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
+
+        EmpresaDto result = empresaService.create(empresaDto);
+
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Test Company", result.getNombre());
-        verify(empresaRepository, times(1)).save(empresa);
+
+        verify(modelMapper).map(any(EmpresaDto.class), eq(Empresa.class));
+        verify(empresaRepository).save(empresa);
+        verify(modelMapper).map(empresa, EmpresaDto.class);
+        verifyNoMoreInteractions(empresaRepository, modelMapper);
     }
 
     @Test
-    void delete_WhenEmpresaExists_ShouldDeleteEmpresa() {
-        // Given
+    void update_WhenExists_ShouldMapSaveAndReturnDto() {
+        // existencia
+        when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
+        // map DTO -> entity (el service setea el id del current)
+        when(modelMapper.map(any(EmpresaDto.class), eq(Empresa.class))).thenReturn(empresa);
+        // save -> entity
+        when(empresaRepository.save(empresa)).thenReturn(empresa);
+        // map entity -> dto
+        when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
+
+        EmpresaDto result = empresaService.update(1L, empresaDto);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Test Company", result.getNombre());
+
+        verify(empresaRepository).findById(1L);
+        verify(modelMapper).map(any(EmpresaDto.class), eq(Empresa.class));
+        verify(empresaRepository).save(empresa);
+        verify(modelMapper).map(empresa, EmpresaDto.class);
+        verifyNoMoreInteractions(empresaRepository, modelMapper);
+    }
+
+    @Test
+    void update_WhenNotExists_ShouldThrowNotFound() {
+        when(empresaRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> empresaService.update(1L, empresaDto));
+
+        assertEquals("Empresa not found with id 1", ex.getMessage());
+        verify(empresaRepository).findById(1L);
+        verifyNoMoreInteractions(empresaRepository);
+        verifyNoInteractions(modelMapper);
+    }
+
+    @Test
+    void delete_WhenExists_ShouldDelete() {
         when(empresaRepository.existsById(1L)).thenReturn(true);
 
-        // When
         empresaService.delete(1L);
 
-        // Then
-        verify(empresaRepository, times(1)).existsById(1L);
-        verify(empresaRepository, times(1)).deleteById(1L);
+        verify(empresaRepository).existsById(1L);
+        verify(empresaRepository).deleteById(1L);
+        verifyNoMoreInteractions(empresaRepository);
     }
 
     @Test
-    void delete_WhenEmpresaDoesNotExist_ShouldThrowException() {
-        // Given
+    void delete_WhenNotExists_ShouldThrowNotFound() {
         when(empresaRepository.existsById(anyLong())).thenReturn(false);
 
-        // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> empresaService.delete(1L));
-        
-        assertEquals("Empresa not found with id 1", exception.getMessage());
-        verify(empresaRepository, times(1)).existsById(1L);
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> empresaService.delete(1L));
+
+        assertEquals("Empresa not found with id 1", ex.getMessage());
+        verify(empresaRepository).existsById(1L);
         verify(empresaRepository, never()).deleteById(anyLong());
+        verifyNoMoreInteractions(empresaRepository);
+        verifyNoInteractions(modelMapper);
     }
 }

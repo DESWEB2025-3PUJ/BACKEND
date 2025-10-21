@@ -15,5 +15,6 @@ public class ProcessDto {
     private String categoria;
     private String estado;
     private Long roleId;
+    private Long empresaId;
 }
 

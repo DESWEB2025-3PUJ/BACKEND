@@ -1,55 +1,58 @@
 package com.wikigroup.desarrolloweb.controller;
 
-import com.wikigroup.desarrolloweb.dtos.EmpresaDto;
-import com.wikigroup.desarrolloweb.model.Empresa;
-import com.wikigroup.desarrolloweb.service.EmpresaService;
-import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.*;
-
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.wikigroup.desarrolloweb.dtos.EmpresaDto;
+import com.wikigroup.desarrolloweb.service.EmpresaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/empresas")
 public class EmpresaController {
 
     private final EmpresaService service;
-    private final ModelMapper mapper;
 
-    public EmpresaController(EmpresaService service, ModelMapper mapper) {
+    public EmpresaController(EmpresaService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<EmpresaDto> getAll() {
-        return service.findAll()
-                .stream()
-                .map(e -> mapper.map(e, EmpresaDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<EmpresaDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public EmpresaDto getById(@PathVariable Long id) {
-        Empresa empresa = service.findById(id);
-        return mapper.map(empresa, EmpresaDto.class);
+    public ResponseEntity<EmpresaDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public EmpresaDto create(@RequestBody EmpresaDto dto) {
-        Empresa empresa = mapper.map(dto, Empresa.class);
-        return mapper.map(service.save(empresa), EmpresaDto.class);
+    public ResponseEntity<EmpresaDto> create(@Valid @RequestBody EmpresaDto dto) {
+        EmpresaDto created = service.create(dto);
+        return ResponseEntity.created(URI.create("/api/empresas/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public EmpresaDto update(@PathVariable Long id, @RequestBody EmpresaDto dto) {
-        Empresa empresa = mapper.map(dto, Empresa.class);
-        empresa.setId(id);
-        return mapper.map(service.save(empresa), EmpresaDto.class);
+    public ResponseEntity<EmpresaDto> update(@PathVariable Long id, @Valid @RequestBody EmpresaDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
+

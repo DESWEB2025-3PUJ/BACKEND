@@ -1,63 +1,49 @@
 package com.wikigroup.desarrolloweb.controller;
 
 import com.wikigroup.desarrolloweb.dtos.UsuarioDto;
-import com.wikigroup.desarrolloweb.model.Usuario;
-import com.wikigroup.desarrolloweb.model.Empresa;
 import com.wikigroup.desarrolloweb.service.UsuarioService;
-import com.wikigroup.desarrolloweb.service.EmpresaService;
-import org.modelmapper.ModelMapper;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     private final UsuarioService service;
-    private final EmpresaService empresaService;
-    private final ModelMapper mapper;
 
-    public UsuarioController(UsuarioService service, EmpresaService empresaService, ModelMapper mapper) {
+    public UsuarioController(UsuarioService service) {
         this.service = service;
-        this.empresaService = empresaService;
-        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<UsuarioDto> getAll() {
-        return service.findAll()
-                .stream()
-                .map(u -> mapper.map(u, UsuarioDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UsuarioDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public UsuarioDto getById(@PathVariable Long id) {
-        Usuario usuario = service.findById(id);
-        return mapper.map(usuario, UsuarioDto.class);
+    public ResponseEntity<UsuarioDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public UsuarioDto create(@RequestBody UsuarioDto dto) {
-        Empresa empresa = empresaService.findById(dto.getEmpresaId());
-        Usuario usuario = mapper.map(dto, Usuario.class);
-        usuario.setEmpresa(empresa);
-        return mapper.map(service.save(usuario), UsuarioDto.class);
+    public ResponseEntity<UsuarioDto> create(@Valid @RequestBody UsuarioDto dto) {
+        UsuarioDto created = service.create(dto);
+        return ResponseEntity.created(URI.create("/api/usuarios/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public UsuarioDto update(@PathVariable Long id, @RequestBody UsuarioDto dto) {
-        Empresa empresa = empresaService.findById(dto.getEmpresaId());
-        Usuario usuario = mapper.map(dto, Usuario.class);
-        usuario.setId(id);
-        usuario.setEmpresa(empresa);
-        return mapper.map(service.save(usuario), UsuarioDto.class);
+    public ResponseEntity<UsuarioDto> update(@PathVariable Long id, @Valid @RequestBody UsuarioDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
+

@@ -28,6 +28,10 @@ public class RoleService {
         return repository.save(role);
     }
 
+    public List<Role> findByEmpresaId(Long empresaId) {
+        return repository.findByEmpresaId(empresaId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Role not found with id " + id);

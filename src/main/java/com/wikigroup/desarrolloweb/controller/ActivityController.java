@@ -39,6 +39,14 @@ public class ActivityController {
         return mapper.map(activity, ActivityDto.class);
     }
 
+    @GetMapping("/process/{processId}")
+    public List<ActivityDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(a -> mapper.map(a, ActivityDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public ActivityDto create(@RequestBody ActivityDto dto) {
         Process process = processService.findById(dto.getProcessId());

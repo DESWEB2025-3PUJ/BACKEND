@@ -3,5 +3,9 @@ package com.wikigroup.desarrolloweb.repository;
 import com.wikigroup.desarrolloweb.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {}
+import java.util.List;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    List<Role> findByEmpresaId(Long empresaId);
+}
 

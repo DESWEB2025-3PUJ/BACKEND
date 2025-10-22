@@ -28,6 +28,10 @@ public class ActivityService {
         return repository.save(activity);
     }
 
+    public List<Activity> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Activity not found with id " + id);

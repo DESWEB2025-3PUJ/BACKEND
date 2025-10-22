@@ -28,6 +28,10 @@ public class EdgeService {
         return repository.save(edge);
     }
 
+    public List<Edge> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Edge not found with id " + id);

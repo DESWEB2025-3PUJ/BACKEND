@@ -39,6 +39,14 @@ public class GatewayController {
         return mapper.map(gateway, GatewayDto.class);
     }
 
+    @GetMapping("/process/{processId}")
+    public List<GatewayDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(g -> mapper.map(g, GatewayDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public GatewayDto create(@RequestBody GatewayDto dto) {
         Process process = processService.findById(dto.getProcessId());

@@ -43,6 +43,14 @@ public class EdgeController {
         return mapper.map(edge, EdgeDto.class);
     }
 
+    @GetMapping("/process/{processId}")
+    public List<EdgeDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(e -> mapper.map(e, EdgeDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public EdgeDto create(@RequestBody EdgeDto dto) {
         Activity source = activityService.findById(dto.getActivitySourceId());

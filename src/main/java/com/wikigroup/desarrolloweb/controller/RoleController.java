@@ -39,6 +39,14 @@ public class RoleController {
         return mapper.map(role, RoleDto.class);
     }
 
+    @GetMapping("/empresa/{empresaId}")
+    public List<RoleDto> getByEmpresa(@PathVariable Long empresaId) {
+        return service.findByEmpresaId(empresaId)
+                .stream()
+                .map(r -> mapper.map(r, RoleDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public RoleDto create(@RequestBody RoleDto dto) {
         Empresa empresa = empresaService.findById(dto.getEmpresaId());

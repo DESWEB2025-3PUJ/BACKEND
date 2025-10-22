@@ -28,6 +28,10 @@ public class ProcessService {
         return repository.save(process);
     }
 
+    public List<Process> findByEmpresaId(Long empresaId) {
+        return repository.findByEmpresaId(empresaId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Process not found with id " + id);

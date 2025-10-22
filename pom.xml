@@ -77,11 +77,11 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- H2 Database for @DataJpaTest -->
+		<!-- H2 Database for @DataJpaTest and local development -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
+			<scope>runtime</scope> <!-- cambiar a test cuando mysql funcione -->
 		</dependency>
 
 		<dependency>
@@ -95,6 +95,31 @@
         <artifactId>modelmapper</artifactId>
         <version>3.2.0</version>
     </dependency>
+
+		<!-- JWT para autenticación -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- BCrypt para encriptar contraseñas -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

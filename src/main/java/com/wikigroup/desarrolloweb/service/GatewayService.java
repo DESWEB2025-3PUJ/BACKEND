@@ -28,6 +28,10 @@ public class GatewayService {
         return repository.save(gateway);
     }
 
+    public List<Gateway> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Gateway not found with id " + id);

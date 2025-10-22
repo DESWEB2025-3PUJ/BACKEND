@@ -30,8 +30,8 @@ public class Process {
     private List<Gateway> gateways;
 
     @ManyToOne
-    @JoinColumn(name = "empresa_id")
-    private Empresa empresa;
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     private String categoria;
     private String estado; // borrador, publicado

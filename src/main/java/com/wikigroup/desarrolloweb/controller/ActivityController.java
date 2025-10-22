@@ -56,6 +56,7 @@ public class ActivityController {
         return mapper.map(service.save(activity), ActivityDto.class);
     }
 
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);

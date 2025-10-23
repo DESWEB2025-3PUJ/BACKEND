@@ -2,7 +2,7 @@ name: Build and Deploy with MicroK8s
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, main]
 
 env:
   IMAGE_TAG: ${{ github.event.inputs.image_tag || 'latest' }}
@@ -45,8 +45,10 @@ jobs:
 
   deploy-onpremise:
     name: Deploy on MicroK8s On-Premise
-    runs-on: self-hosted 
+    if: github.ref == 'refs/heads/main
+    runs-on: self-hosted
     needs: build-and-publish
+    timeout-minutes: 15
 
     steps:
     - name: Checkout repo

@@ -90,7 +90,7 @@ public class MapperConfig {
                             ProcessDto::setRoleId);
                 });
 
-        // ====== DTO -> Entity (sin hidratar relaciones) ======
+        // ====== DTO -> Entity ======
 
         // EmpresaDto -> Empresa
         mapper.typeMap(EmpresaDto.class, Empresa.class);

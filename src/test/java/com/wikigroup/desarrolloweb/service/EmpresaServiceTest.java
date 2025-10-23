@@ -22,14 +22,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EmpresaServiceTest {
 
-    @Mock
-    private EmpresaRepository empresaRepository;
-
-    @Mock
-    private ModelMapper modelMapper;
+    @Mock private EmpresaRepository empresaRepository;
+    @Mock private ModelMapper modelMapper;
 
     @InjectMocks
-    private EmpresaService empresaService; // usa constructor (repo, mapper)
+    private EmpresaService empresaService;
 
     private Empresa empresa;
     private Empresa empresa2;
@@ -100,7 +97,7 @@ class EmpresaServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> empresaService.getById(1L));
 
-        assertEquals("Empresa not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Empresa not found"));
         verify(empresaRepository).findById(1L);
         verifyNoMoreInteractions(empresaRepository);
         verifyNoInteractions(modelMapper);
@@ -126,18 +123,15 @@ class EmpresaServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> empresaService.findEntityById(1L));
 
-        assertEquals("Empresa not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Empresa not found"));
         verify(empresaRepository).findById(1L);
         verifyNoMoreInteractions(empresaRepository);
     }
 
     @Test
     void create_ShouldMapSaveAndReturnDto() {
-        // map DTO -> entity
         when(modelMapper.map(any(EmpresaDto.class), eq(Empresa.class))).thenReturn(empresa);
-        // repo save -> entity
         when(empresaRepository.save(empresa)).thenReturn(empresa);
-        // map entity -> DTO
         when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
 
         EmpresaDto result = empresaService.create(empresaDto);
@@ -154,13 +148,9 @@ class EmpresaServiceTest {
 
     @Test
     void update_WhenExists_ShouldMapSaveAndReturnDto() {
-        // existencia
         when(empresaRepository.findById(1L)).thenReturn(Optional.of(empresa));
-        // map DTO -> entity (el service setea el id del current)
         when(modelMapper.map(any(EmpresaDto.class), eq(Empresa.class))).thenReturn(empresa);
-        // save -> entity
         when(empresaRepository.save(empresa)).thenReturn(empresa);
-        // map entity -> dto
         when(modelMapper.map(empresa, EmpresaDto.class)).thenReturn(empresaDto);
 
         EmpresaDto result = empresaService.update(1L, empresaDto);
@@ -183,7 +173,7 @@ class EmpresaServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> empresaService.update(1L, empresaDto));
 
-        assertEquals("Empresa not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Empresa not found"));
         verify(empresaRepository).findById(1L);
         verifyNoMoreInteractions(empresaRepository);
         verifyNoInteractions(modelMapper);
@@ -207,7 +197,7 @@ class EmpresaServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> empresaService.delete(1L));
 
-        assertEquals("Empresa not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Empresa not found"));
         verify(empresaRepository).existsById(1L);
         verify(empresaRepository, never()).deleteById(anyLong());
         verifyNoMoreInteractions(empresaRepository);

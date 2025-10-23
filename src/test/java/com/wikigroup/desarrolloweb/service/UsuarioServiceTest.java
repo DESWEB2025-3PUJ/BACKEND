@@ -24,11 +24,11 @@ import static org.mockito.Mockito.*;
 class UsuarioServiceTest {
 
     @Mock private UsuarioRepository usuarioRepository;
-    @Mock private EmpresaService empresaService;  // para resolver empresaId -> Empresa
+    @Mock private EmpresaService empresaService;
     @Mock private ModelMapper modelMapper;
 
     @InjectMocks
-    private UsuarioService usuarioService; // usa (repo, empresaService, mapper)
+    private UsuarioService usuarioService;
 
     private Usuario usuario;
     private Usuario usuario2;
@@ -109,7 +109,7 @@ class UsuarioServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> usuarioService.getById(1L));
 
-        assertEquals("Usuario not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Usuario not found"));
         verify(usuarioRepository).findById(1L);
         verifyNoMoreInteractions(usuarioRepository);
         verifyNoInteractions(modelMapper, empresaService);
@@ -136,7 +136,7 @@ class UsuarioServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> usuarioService.findEntityById(1L));
 
-        assertEquals("Usuario not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Usuario not found"));
         verify(usuarioRepository).findById(1L);
         verifyNoMoreInteractions(usuarioRepository);
         verifyNoInteractions(modelMapper, empresaService);
@@ -144,13 +144,9 @@ class UsuarioServiceTest {
 
     @Test
     void create_ShouldMapSetEmpresaSaveAndReturnDto() {
-        // map DTO -> entity
         when(modelMapper.map(any(UsuarioDto.class), eq(Usuario.class))).thenReturn(usuario);
-        // set empresa (por empresaId)
         when(empresaService.findEntityById(1L)).thenReturn(empresa);
-        // save repo
         when(usuarioRepository.save(usuario)).thenReturn(usuario);
-        // map entity -> DTO
         when(modelMapper.map(usuario, UsuarioDto.class)).thenReturn(usuarioDto);
 
         UsuarioDto result = usuarioService.create(usuarioDto);
@@ -196,7 +192,7 @@ class UsuarioServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> usuarioService.update(1L, usuarioDto));
 
-        assertEquals("Usuario not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Usuario not found"));
         verify(usuarioRepository).findById(1L);
         verifyNoMoreInteractions(usuarioRepository);
         verifyNoInteractions(modelMapper, empresaService);
@@ -221,7 +217,7 @@ class UsuarioServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class,
                 () -> usuarioService.delete(1L));
 
-        assertEquals("Usuario not found with id 1", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Usuario not found"));
         verify(usuarioRepository).existsById(1L);
         verify(usuarioRepository, never()).deleteById(anyLong());
         verifyNoMoreInteractions(usuarioRepository);

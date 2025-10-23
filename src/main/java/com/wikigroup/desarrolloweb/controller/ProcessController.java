@@ -29,6 +29,11 @@ public class ProcessController {
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @GetMapping("/by-empresa/{empresaId}")
+    public ResponseEntity<List<ProcessDto>> getByEmpresa(@PathVariable Long empresaId) {
+    return ResponseEntity.ok(service.getByEmpresaId(empresaId));
+    }
+
     @PostMapping
     public ResponseEntity<ProcessDto> create(@Valid @RequestBody ProcessDto dto) {
         ProcessDto created = service.create(dto);

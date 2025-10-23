@@ -50,6 +50,19 @@ public class EdgeService {
         return mapper.map(saved, EdgeDto.class);
     }
 
+    // listar por processId en formato DTO
+    @Transactional(readOnly = true)
+    public List<EdgeDto> getByProcessId(Long processId) {
+        // Validación temprana: asegura que el proceso exista
+        processService.findEntityById(processId);
+
+        return repository.findByProcessId(processId).stream()
+                .map(e -> mapper.map(e, EdgeDto.class))
+                .collect(Collectors.toList());
+    }
+
+    // ENTIDAD para uso interno entre servicios (consistente con tu patrón)
+    @Transactional(readOnly = true)
     public EdgeDto update(Long id, EdgeDto dto) {
         // Garantiza existencia
         repository.findById(id)

@@ -29,6 +29,12 @@ public class GatewayController {
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @GetMapping("/by-process/{processId}")
+    public ResponseEntity<List<GatewayDto>> getByProcess(@PathVariable Long processId) {
+    return ResponseEntity.ok(service.getByProcessId(processId));
+    }
+
+
     @PostMapping
     public ResponseEntity<GatewayDto> create(@Valid @RequestBody GatewayDto dto) {
         GatewayDto created = service.create(dto);

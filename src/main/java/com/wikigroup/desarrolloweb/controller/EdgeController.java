@@ -29,6 +29,12 @@ public class EdgeController {
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @GetMapping("/by-process/{processId}")
+    public ResponseEntity<List<EdgeDto>> getByProcess(@PathVariable Long processId) {
+    return ResponseEntity.ok(service.getByProcessId(processId));
+    }
+
+
     @PostMapping
     public ResponseEntity<EdgeDto> create(@Valid @RequestBody EdgeDto dto) {
         EdgeDto created = service.create(dto);

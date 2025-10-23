@@ -40,7 +40,18 @@ public class GatewayService {
         return mapper.map(gateway, GatewayDto.class);
     }
 
-    // Opcional: útil si algún otro service necesita la ENTIDAD
+    //listar por processId en formato DTO
+    @Transactional(readOnly = true)
+    public List<GatewayDto> getByProcessId(Long processId) {
+        // Validación temprana: asegura que el proceso exista
+        processService.findEntityById(processId);
+
+        return repository.findByProcessId(processId).stream()
+                .map(g -> mapper.map(g, GatewayDto.class))
+                .collect(Collectors.toList());
+    }
+
+    // ENTIDAD para uso interno entre servicios
     @Transactional(readOnly = true)
     public Gateway findEntityById(Long id) {
         return repository.findById(id)

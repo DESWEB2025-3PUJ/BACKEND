@@ -44,6 +44,17 @@ public class ActivityService {
         return mapper.map(activity, ActivityDto.class);
     }
 
+    // listar por processId (en DTOs) 
+    @Transactional(readOnly = true)
+    public List<ActivityDto> getByProcessId(Long processId) {
+        // validar que el proceso exista (ayuda a detectar IDs inválidos)
+        processService.findEntityById(processId);
+
+        return repository.findByProcessId(processId).stream()
+                .map(a -> mapper.map(a, ActivityDto.class))
+                .collect(Collectors.toList());
+    }
+
     // ENTIDAD para uso interno entre servicios
     @Transactional(readOnly = true)
     public Activity findEntityById(Long id) {

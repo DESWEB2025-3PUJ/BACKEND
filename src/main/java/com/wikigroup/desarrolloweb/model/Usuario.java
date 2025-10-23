@@ -17,6 +17,7 @@ public class Usuario {
     private String nombre;
     private String email;
     private String password;
+    private String rol; // ADMINISTRADOR, EDITOR, SOLO_LECTURA
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")

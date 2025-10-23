@@ -42,6 +42,17 @@ public class ProcessService {
         return mapper.map(process, ProcessDto.class);
     }
 
+    // istar por empresa en formato DTO
+    @Transactional(readOnly = true)
+    public List<ProcessDto> getByEmpresaId(Long empresaId) {
+        // Validación temprana: asegura que la empresa exista
+        empresaService.findEntityById(empresaId);
+
+        return repository.findByEmpresaId(empresaId).stream()
+                .map(p -> mapper.map(p, ProcessDto.class))
+                .collect(Collectors.toList());
+    }
+
     // ENTIDAD para otros servicios
     @Transactional(readOnly = true)
     public BpmProcess findEntityById(Long id) {

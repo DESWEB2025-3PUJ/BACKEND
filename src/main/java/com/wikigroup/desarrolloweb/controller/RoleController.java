@@ -28,6 +28,11 @@ public class RoleController {
     public ResponseEntity<RoleDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
+    
+    @GetMapping("/by-empresa/{empresaId}")
+    public ResponseEntity<List<RoleDto>> getByEmpresa(@PathVariable Long empresaId) {
+    return ResponseEntity.ok(service.getByEmpresaId(empresaId));
+    }
 
     @PostMapping
     public ResponseEntity<RoleDto> create(@Valid @RequestBody RoleDto dto) {

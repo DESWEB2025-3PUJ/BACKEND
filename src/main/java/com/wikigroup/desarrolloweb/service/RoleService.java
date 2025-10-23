@@ -40,6 +40,17 @@ public class RoleService {
         return mapper.map(role, RoleDto.class);
     }
 
+    // listar por empresa en formato DTO
+    @Transactional(readOnly = true)
+    public List<RoleDto> getByEmpresaId(Long empresaId) {
+        // Validación temprana: asegura que la empresa exista
+        empresaService.findEntityById(empresaId);
+
+        return repository.findByEmpresaId(empresaId).stream()
+                .map(r -> mapper.map(r, RoleDto.class))
+                .collect(Collectors.toList());
+    }
+
     // Útil para otros services que necesiten la ENTIDAD Role
     @Transactional(readOnly = true)
     public Role findEntityById(Long id) {

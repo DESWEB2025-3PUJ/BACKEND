@@ -38,7 +38,7 @@ public class EmpresaService {
         return mapper.map(empresa, EmpresaDto.class);
     }
 
-    // Opcional: útil para otros services que necesiten la ENTIDAD
+    // ENTIDAD para uso interno entre servicios
     @Transactional(readOnly = true)
     public Empresa findEntityById(Long id) {
         return repository.findById(id)

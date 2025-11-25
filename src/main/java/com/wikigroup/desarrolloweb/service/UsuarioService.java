@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * HU-02: Registro de usuario en empresa
  */
 @Service
+@Transactional
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
@@ -196,4 +197,19 @@ public class UsuarioService {
 
         return dto;
     }
+
+    // -------- helpers --------
+    private Usuario toEntityWithRelations(UsuarioDto dto, Long idOrNull) {
+        Usuario entity = mapper.map(dto, Usuario.class);
+        if (idOrNull != null) entity.setId(idOrNull);
+
+        if (dto.getEmpresaId() != null) {
+            Empresa empresa = empresaService.findEntityById(dto.getEmpresaId()); // ENTIDAD
+            entity.setEmpresa(empresa);
+        } else {
+            entity.setEmpresa(null);
+        }
+        return entity;
+    }
 }
+

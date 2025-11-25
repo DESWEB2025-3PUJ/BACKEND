@@ -4,6 +4,7 @@ import com.wikigroup.desarrolloweb.model.Usuario;
 import com.wikigroup.desarrolloweb.model.Empresa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 class UsuarioRepositoryTest {
 
     @Autowired
@@ -25,7 +27,6 @@ class UsuarioRepositoryTest {
 
     @Test
     void testSave() {
-        // Given
         Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
@@ -37,10 +38,8 @@ class UsuarioRepositoryTest {
         usuario.setPassword("password123");
         usuario.setEmpresa(empresa);
 
-        // When
         Usuario savedUsuario = usuarioRepository.save(usuario);
 
-        // Then
         assertThat(savedUsuario.getId()).isNotNull();
         assertThat(savedUsuario.getNombre()).isEqualTo("Test User");
         assertThat(savedUsuario.getEmail()).isEqualTo("test@example.com");
@@ -48,7 +47,6 @@ class UsuarioRepositoryTest {
 
     @Test
     void testFindById() {
-        // Given
         Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
@@ -61,17 +59,14 @@ class UsuarioRepositoryTest {
         usuario.setEmpresa(empresa);
         entityManager.persistAndFlush(usuario);
 
-        // When
         Optional<Usuario> foundUsuario = usuarioRepository.findById(usuario.getId());
 
-        // Then
         assertThat(foundUsuario).isPresent();
         assertThat(foundUsuario.get().getNombre()).isEqualTo("Test User");
     }
 
     @Test
     void testFindAll() {
-        // Given
         Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
@@ -91,16 +86,13 @@ class UsuarioRepositoryTest {
         usuario2.setEmpresa(empresa);
         entityManager.persistAndFlush(usuario2);
 
-        // When
         List<Usuario> usuarios = usuarioRepository.findAll();
 
-        // Then
         assertThat(usuarios).hasSize(2);
     }
 
     @Test
     void testDeleteById() {
-        // Given
         Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
@@ -115,18 +107,15 @@ class UsuarioRepositoryTest {
 
         Long usuarioId = usuario.getId();
 
-        // When
         usuarioRepository.deleteById(usuarioId);
         entityManager.flush();
 
-        // Then
         Optional<Usuario> deletedUsuario = usuarioRepository.findById(usuarioId);
         assertThat(deletedUsuario).isEmpty();
     }
 
     @Test
     void testExistsById() {
-        // Given
         Empresa empresa = new Empresa();
         empresa.setNombre("Test Company");
         empresa.setDescripcion("Test Description");
@@ -139,7 +128,6 @@ class UsuarioRepositoryTest {
         usuario.setEmpresa(empresa);
         entityManager.persistAndFlush(usuario);
 
-        // When & Then
         assertThat(usuarioRepository.existsById(usuario.getId())).isTrue();
         assertThat(usuarioRepository.existsById(999L)).isFalse();
     }

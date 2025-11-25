@@ -1,8 +1,6 @@
 package com.wikigroup.desarrolloweb.controller;
 
 import com.wikigroup.desarrolloweb.dtos.UsuarioDto;
-import com.wikigroup.desarrolloweb.model.Usuario;
-import com.wikigroup.desarrolloweb.model.Empresa;
 import com.wikigroup.desarrolloweb.service.UsuarioService;
 import com.wikigroup.desarrolloweb.service.EmpresaService;
 import org.modelmapper.ModelMapper;
@@ -11,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controlador para gestión de usuarios
@@ -23,13 +21,9 @@ import java.util.stream.Collectors;
 public class UsuarioController {
 
     private final UsuarioService service;
-    private final EmpresaService empresaService;
-    private final ModelMapper mapper;
 
-    public UsuarioController(UsuarioService service, EmpresaService empresaService, ModelMapper mapper) {
+    public UsuarioController(UsuarioService service) {
         this.service = service;
-        this.empresaService = empresaService;
-        this.mapper = mapper;
     }
 
     // ============ Endpoints Legacy (mantener compatibilidad) ============
@@ -137,3 +131,4 @@ public class UsuarioController {
         }
     }
 }
+

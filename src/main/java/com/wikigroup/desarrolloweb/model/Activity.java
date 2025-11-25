@@ -24,7 +24,7 @@ public class Activity {
 
     @ManyToOne
     @JoinColumn(name = "process_id")
-    private Process process;
+    private BpmProcess process;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

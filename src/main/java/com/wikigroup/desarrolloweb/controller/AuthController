@@ -1,0 +1,35 @@
+package com.wikigroup.desarrolloweb.controller;
+
+import com.wikigroup.desarrolloweb.dtos.AuthResponse;
+import com.wikigroup.desarrolloweb.dtos.LoginRequest;
+import com.wikigroup.desarrolloweb.dtos.RegisterRequest;
+import com.wikigroup.desarrolloweb.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService service;
+
+    public AuthController(AuthService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        AuthResponse created = service.register(request);
+        // URI simbólica: podrías cambiarla si luego tienes endpoint para usuario
+        URI location = URI.create("/api/usuarios/" + created.getUsuario().getId());
+        return ResponseEntity.created(location).body(created);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(service.login(request));
+    }
+}

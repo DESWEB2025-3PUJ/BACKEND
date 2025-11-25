@@ -96,49 +96,40 @@ class UsuarioControllerTest {
     @Test
     void getById_WhenUsuarioExists_ShouldReturnUsuario() throws Exception {
         // Given
-        when(usuarioService.findById(1L)).thenReturn(usuario);
-        when(modelMapper.map(usuario, UsuarioDto.class)).thenReturn(usuarioDto);
+        when(usuarioService.obtenerUsuarioPorId(1L)).thenReturn(usuarioDto);
 
         // When & Then
         mockMvc.perform(get("/api/usuarios/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.nombre").value("Test User"))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
 
-        verify(usuarioService, times(1)).findById(1L);
+        verify(usuarioService, times(1)).obtenerUsuarioPorId(1L);
     }
 
     @Test
     void create_ShouldCreateAndReturnUsuario() throws Exception {
         // Given
-        when(empresaService.findById(1L)).thenReturn(empresa);
-        when(modelMapper.map(any(UsuarioDto.class), eq(Usuario.class))).thenReturn(usuario);
-        when(usuarioService.save(any(Usuario.class))).thenReturn(usuario);
-        when(modelMapper.map(any(Usuario.class), eq(UsuarioDto.class))).thenReturn(usuarioDto);
+        when(usuarioService.crearUsuario(any(UsuarioDto.class), eq(1L))).thenReturn(usuarioDto);
 
         // When & Then
-        mockMvc.perform(post("/api/usuarios")
+        mockMvc.perform(post("/api/usuarios/empresa/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(usuarioDto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.nombre").value("Test User"))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
 
-        verify(empresaService, times(1)).findById(1L);
-        verify(usuarioService, times(1)).save(any(Usuario.class));
+        verify(usuarioService, times(1)).crearUsuario(any(UsuarioDto.class), eq(1L));
     }
 
     @Test
     void update_ShouldUpdateAndReturnUsuario() throws Exception {
         // Given
-        when(empresaService.findById(1L)).thenReturn(empresa);
-        when(modelMapper.map(any(UsuarioDto.class), eq(Usuario.class))).thenReturn(usuario);
-        when(usuarioService.save(any(Usuario.class))).thenReturn(usuario);
-        when(modelMapper.map(any(Usuario.class), eq(UsuarioDto.class))).thenReturn(usuarioDto);
+        when(usuarioService.actualizarUsuario(eq(1L), any(UsuarioDto.class))).thenReturn(usuarioDto);
 
         // When & Then
         mockMvc.perform(put("/api/usuarios/1")
@@ -149,19 +140,18 @@ class UsuarioControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.nombre").value("Test User"));
 
-        verify(empresaService, times(1)).findById(1L);
-        verify(usuarioService, times(1)).save(any(Usuario.class));
+        verify(usuarioService, times(1)).actualizarUsuario(eq(1L), any(UsuarioDto.class));
     }
 
     @Test
     void delete_ShouldDeleteUsuario() throws Exception {
         // Given
-        doNothing().when(usuarioService).delete(1L);
+        doNothing().when(usuarioService).eliminarUsuario(1L);
 
         // When & Then
         mockMvc.perform(delete("/api/usuarios/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        verify(usuarioService, times(1)).delete(1L);
+        verify(usuarioService, times(1)).eliminarUsuario(1L);
     }
 }

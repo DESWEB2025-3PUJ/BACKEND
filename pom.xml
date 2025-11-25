@@ -115,14 +115,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- BCrypt para encriptar contraseñas -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
+	<!-- Spring Security completo -->
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
+</dependencies>	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

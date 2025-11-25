@@ -17,6 +17,13 @@ public class Empresa {
     private Long id;
 
     private String nombre;
+    
+    @Column(unique = true)
+    private String nit;  // HU-01: NIT u otro identificador único de la empresa
+    
+    @Column(unique = true)
+    private String correoContacto;  // HU-01: Correo de contacto de la empresa
+    
     private String descripcion;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)

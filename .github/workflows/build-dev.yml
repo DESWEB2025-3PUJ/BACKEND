@@ -2,7 +2,7 @@ name: Build and Deploy with MicroK8s
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, CONFIGURAR-ENDPOINTS-Y-PONER-H2]
 
 env:
   IMAGE_TAG: ${{ github.event.inputs.image_tag || 'latest' }}

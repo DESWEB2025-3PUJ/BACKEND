@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -16,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * - Permite todas las peticiones sin autenticación
  * - Usa H2 en memoria (configurado en application-test.properties)
  * - No requiere JWT ni ningún tipo de autenticación
+ * - Proporciona un PasswordEncoder para beans que lo necesiten
  */
 @TestConfiguration
 @EnableWebSecurity
@@ -35,5 +38,13 @@ public class TestSecurityConfig {
             );
         
         return http.build();
+    }
+    
+    /**
+     * PasswordEncoder para tests - necesario para AuthService y otros componentes
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

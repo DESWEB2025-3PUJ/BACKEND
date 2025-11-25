@@ -2,9 +2,9 @@ name: Run Tests
 
 on:
   push:
-    branches: [dev, main]
+    branches: [dev, main, CONFIGURAR-ENDPOINTS-Y-PONER-H2]
   pull_request:
-    branches: [dev, main]
+    branches: [dev, main, CONFIGURAR-ENDPOINTS-Y-PONER-H2]
 
 jobs:
   test:

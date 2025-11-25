@@ -10,9 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,7 +27,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UsuarioController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 class UsuarioControllerTest {
 
@@ -75,10 +78,10 @@ class UsuarioControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getAll_ShouldReturnListOfUsuarios() throws Exception {
         // Given
         List<Usuario> usuarios = Arrays.asList(usuario);
-        List<UsuarioDto> usuarioDtos = Arrays.asList(usuarioDto);
         
         when(usuarioService.findAll()).thenReturn(usuarios);
         when(modelMapper.map(any(Usuario.class), eq(UsuarioDto.class))).thenReturn(usuarioDto);
@@ -96,6 +99,7 @@ class UsuarioControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getById_WhenUsuarioExists_ShouldReturnUsuario() throws Exception {
         // Given
         when(usuarioService.findById(1L)).thenReturn(usuario);
@@ -113,6 +117,7 @@ class UsuarioControllerTest {
     }
 
     @Test
+    @WithMockUser
     void create_ShouldCreateAndReturnUsuario() throws Exception {
         // Given
         when(empresaService.findById(1L)).thenReturn(empresa);
@@ -135,6 +140,7 @@ class UsuarioControllerTest {
     }
 
     @Test
+    @WithMockUser
     void update_ShouldUpdateAndReturnUsuario() throws Exception {
         // Given
         when(empresaService.findById(1L)).thenReturn(empresa);
@@ -156,6 +162,7 @@ class UsuarioControllerTest {
     }
 
     @Test
+    @WithMockUser
     void delete_ShouldDeleteUsuario() throws Exception {
         // Given
         doNothing().when(usuarioService).delete(1L);

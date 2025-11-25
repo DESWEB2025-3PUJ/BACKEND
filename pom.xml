@@ -77,11 +77,11 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- H2 Database for @DataJpaTest and local development -->
+		<!-- H2 Database for @DataJpaTest -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope> <!-- cambiar a test cuando mysql funcione -->
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

@@ -74,6 +74,10 @@ public class ProcessService {
         return mapper.map(saved, ProcessDto.class);
     }
 
+    public List<Process> findByEmpresaId(Long empresaId) {
+        return repository.findByEmpresaId(empresaId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Process not found with id " + id);

@@ -76,6 +76,10 @@ public class ActivityService {
         return mapper.map(saved, ActivityDto.class);
     }
 
+    public List<Activity> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Activity not found with id " + id);

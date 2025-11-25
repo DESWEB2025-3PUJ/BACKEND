@@ -74,6 +74,10 @@ public class GatewayService {
         return mapper.map(saved, GatewayDto.class);
     }
 
+    public List<Gateway> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Gateway not found with id " + id);

@@ -34,6 +34,14 @@ public class RoleController {
     return ResponseEntity.ok(service.getByEmpresaId(empresaId));
     }
 
+    @GetMapping("/empresa/{empresaId}")
+    public List<RoleDto> getByEmpresa(@PathVariable Long empresaId) {
+        return service.findByEmpresaId(empresaId)
+                .stream()
+                .map(r -> mapper.map(r, RoleDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public ResponseEntity<RoleDto> create(@Valid @RequestBody RoleDto dto) {
         RoleDto created = service.create(dto);

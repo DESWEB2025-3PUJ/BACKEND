@@ -29,9 +29,26 @@ public class EdgeController {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @GetMapping("/by-process/{processId}")
-    public ResponseEntity<List<EdgeDto>> getByProcess(@PathVariable Long processId) {
-    return ResponseEntity.ok(service.getByProcessId(processId));
+    @GetMapping("/process/{processId}")
+    public List<EdgeDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(e -> mapper.map(e, EdgeDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping
+    public EdgeDto create(@RequestBody EdgeDto dto) {
+        Activity source = activityService.findById(dto.getActivitySourceId());
+        Activity destiny = activityService.findById(dto.getActivityDestinyId());
+        Process process = processService.findById(dto.getProcessId());
+
+        Edge edge = mapper.map(dto, Edge.class);
+        edge.setActivitySource(source);
+        edge.setActivityDestiny(destiny);
+        edge.setProcess(process);
+        
+        return mapper.map(service.save(edge), EdgeDto.class);
     }
 
 

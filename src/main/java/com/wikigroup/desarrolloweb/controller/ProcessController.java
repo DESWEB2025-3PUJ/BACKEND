@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/processes")
+@RequestMapping("/api/procesos")
 public class ProcessController {
 
     private final ProcessService service;
@@ -32,6 +32,14 @@ public class ProcessController {
     @GetMapping("/by-empresa/{empresaId}")
     public ResponseEntity<List<ProcessDto>> getByEmpresa(@PathVariable Long empresaId) {
     return ResponseEntity.ok(service.getByEmpresaId(empresaId));
+    }
+
+    @GetMapping("/empresa/{empresaId}")
+    public List<ProcessDto> getByEmpresa(@PathVariable Long empresaId) {
+        return service.findByEmpresaId(empresaId)
+                .stream()
+                .map(p -> mapper.map(p, ProcessDto.class))
+                .collect(Collectors.toList());
     }
 
     @PostMapping

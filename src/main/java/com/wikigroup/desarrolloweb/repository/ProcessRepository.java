@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ProcessRepository extends JpaRepository<BpmProcess, Long> {
-    @Query("SELECT p FROM BpmProcess p WHERE p.role.empresa.id = :empresaId")
-    List<BpmProcess> findByEmpresaId(@Param("empresaId") Long empresaId);
+public interface ProcessRepository extends JpaRepository<Process, Long> {
+    @Query("SELECT p FROM Process p WHERE p.role.empresa.id = :empresaId")
+    List<Process> findByEmpresaId(@Param("empresaId") Long empresaId);
 }

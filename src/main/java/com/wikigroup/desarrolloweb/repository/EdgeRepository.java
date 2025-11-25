@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.wikigroup.desarrolloweb.model.Edge;
 
+import java.util.List;
+
 public interface EdgeRepository extends JpaRepository<Edge, Long> {
     List<Edge> findByProcessId(Long processId);
 }

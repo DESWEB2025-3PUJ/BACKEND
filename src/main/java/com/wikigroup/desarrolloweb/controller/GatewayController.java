@@ -29,11 +29,13 @@ public class GatewayController {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @GetMapping("/by-process/{processId}")
-    public ResponseEntity<List<GatewayDto>> getByProcess(@PathVariable Long processId) {
-    return ResponseEntity.ok(service.getByProcessId(processId));
+    @GetMapping("/process/{processId}")
+    public List<GatewayDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(g -> mapper.map(g, GatewayDto.class))
+                .collect(Collectors.toList());
     }
-
 
     @PostMapping
     public ResponseEntity<GatewayDto> create(@Valid @RequestBody GatewayDto dto) {

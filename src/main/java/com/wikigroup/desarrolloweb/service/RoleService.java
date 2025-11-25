@@ -74,6 +74,10 @@ public class RoleService {
         return mapper.map(saved, RoleDto.class);
     }
 
+    public List<Role> findByEmpresaId(Long empresaId) {
+        return repository.findByEmpresaId(empresaId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Role not found with id " + id);

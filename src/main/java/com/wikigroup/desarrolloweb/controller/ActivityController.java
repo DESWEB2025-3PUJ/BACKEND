@@ -35,6 +35,14 @@ public class ActivityController {
         return ResponseEntity.ok(service.getByProcessId(processId));
     }
 
+    @GetMapping("/process/{processId}")
+    public List<ActivityDto> getByProcess(@PathVariable Long processId) {
+        return service.findByProcessId(processId)
+                .stream()
+                .map(a -> mapper.map(a, ActivityDto.class))
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public ResponseEntity<ActivityDto> create(@Valid @RequestBody ActivityDto dto) {
         ActivityDto created = service.create(dto);

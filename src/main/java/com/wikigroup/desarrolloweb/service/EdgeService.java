@@ -73,6 +73,10 @@ public class EdgeService {
         return mapper.map(saved, EdgeDto.class);
     }
 
+    public List<Edge> findByProcessId(Long processId) {
+        return repository.findByProcessId(processId);
+    }
+
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Edge not found with id " + id);

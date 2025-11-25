@@ -22,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import org.springframework.context.annotation.Profile;
+
 /**
  * Configuración central de Spring Security.
  * 
@@ -34,10 +36,13 @@ import java.util.Arrays;
  * - BCrypt para encriptar contraseñas
  * - Filtro JWT insertado antes del filtro de autenticación
  * - @EnableMethodSecurity para usar @Secured y @PreAuthorize
+ * 
+ * NO se activa en perfil 'test' (tests usan TestSecurityConfig)
  */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
+@Profile("!test")
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;

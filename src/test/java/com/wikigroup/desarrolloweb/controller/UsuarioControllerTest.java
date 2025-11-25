@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UsuarioController.class)
+@ActiveProfiles("test")
 class UsuarioControllerTest {
 
     @Autowired
@@ -38,6 +40,12 @@ class UsuarioControllerTest {
 
     @MockBean
     private ModelMapper modelMapper;
+    
+    @MockBean
+    private com.wikigroup.desarrolloweb.security.JwtService jwtService;
+    
+    @MockBean
+    private com.wikigroup.desarrolloweb.security.CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private ObjectMapper objectMapper;

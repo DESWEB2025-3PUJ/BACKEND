@@ -16,6 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
  * Configuración central de Spring Security.
@@ -54,6 +59,9 @@ public class SecurityConfiguration {
                 // Deshabilitar CSRF (no necesario con JWT en APIs REST)
                 .csrf(AbstractHttpConfigurer::disable)
                 
+                // ⬇️ HABILITAR CORS - ESTO ES CRÍTICO
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                
                 // Configurar autorización de peticiones
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas (no requieren autenticación)
@@ -81,6 +89,54 @@ public class SecurityConfiguration {
                 );
 
         return http.build();
+    }
+
+    /**
+     * Configuración CORS para permitir peticiones desde Angular
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+        // Orígenes permitidos (Angular en desarrollo)
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:4200",
+            "http://localhost:8080",
+            "http://localhost:8081"
+        ));
+        
+        // Métodos HTTP permitidos
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+        
+        // Headers permitidos
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+        ));
+        
+        // Headers expuestos
+        configuration.setExposedHeaders(Arrays.asList(
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials",
+            "Authorization"
+        ));
+        
+        // Permitir credenciales
+        configuration.setAllowCredentials(true);
+        
+        // Tiempo de caché para preflight requests (1 hora)
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        
+        return source;
     }
 
     /**

@@ -44,7 +44,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: public   # <- en MicroK8s normalmente es "public" (verifica con `kubectl get ingressclass`)
+  ingressClassName: public  # <- en MicroK8s normalmente es "public" (verifica con `kubectl get ingressclass`)
   rules:
     - host: 
       http:

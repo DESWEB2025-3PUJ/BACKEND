@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/DESWEB2025-3PUJ/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
+          image: ghcr.io/desweb2025-3puj/backend:latest   # <- IMAGEN PUBLICADA EN GHCR
           ports:
             - containerPort: 8080
 

@@ -107,7 +107,8 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:4200",
             "http://localhost:8080",
-            "http://localhost:8081"
+            "http://localhost:8081",
+            "http://10.43.103.98:4000"
         ));
         
         // Métodos HTTP permitidos
